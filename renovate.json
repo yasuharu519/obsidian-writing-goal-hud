@@ -1,0 +1,23 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": [
+		"config:recommended"
+	],
+	"timezone": "Asia/Tokyo",
+	"minimumReleaseAge": "14 days",
+	"dependencyDashboard": true,
+	"labels": [
+		"dependencies"
+	],
+	"packageRules": [
+		{
+			"matchUpdateTypes": [
+				"minor",
+				"patch"
+			],
+			"matchCurrentVersion": "!/^0/",
+			"automerge": false,
+			"groupName": "minor and patch dependencies"
+		}
+	]
+}

@@ -1,0 +1,94 @@
+.writing-goal-hud {
+	position: absolute;
+	right: 14px;
+	bottom: 14px;
+	z-index: 100;
+
+	min-width: 140px;
+	padding: 6px 10px 8px 10px;
+	border-radius: 6px;
+
+	background-color: rgba(0, 0, 0, 0.45);
+	-webkit-backdrop-filter: blur(8px);
+	backdrop-filter: blur(8px);
+
+	color: #ffffff;
+	font-size: 11px;
+	font-variant-numeric: tabular-nums;
+	line-height: 1.4;
+	white-space: nowrap;
+
+	pointer-events: none;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.writing-goal-hud__row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 4px;
+}
+
+.writing-goal-hud__text {
+	flex: 1;
+}
+
+.writing-goal-hud__toggle {
+	pointer-events: auto;
+	cursor: pointer;
+
+	width: 16px;
+	height: 16px;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	border-radius: 3px;
+
+	background-color: transparent;
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 11px;
+	line-height: 1;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.writing-goal-hud__toggle:hover {
+	background-color: rgba(255, 255, 255, 0.15);
+	color: #ffffff;
+}
+
+.writing-goal-hud__bar {
+	height: 2px;
+	border-radius: 1px;
+	background-color: rgba(255, 255, 255, 0.15);
+	overflow: hidden;
+}
+
+.writing-goal-hud__bar-fill {
+	width: 0%;
+	height: 100%;
+	background-color: #4ec9b0;
+	transition: width 120ms ease, background-color 120ms ease;
+}
+
+.writing-goal-hud.is-over .writing-goal-hud__bar-fill {
+	background-color: #e06c75;
+}
+
+.writing-goal-hud.is-minimized {
+	min-width: 0;
+	padding: 2px 4px;
+}
+
+.writing-goal-hud.is-minimized .writing-goal-hud__text,
+.writing-goal-hud.is-minimized .writing-goal-hud__bar {
+	display: none;
+}
+
+.writing-goal-hud.is-minimized .writing-goal-hud__row {
+	margin-bottom: 0;
+	gap: 0;
+}

@@ -1,0 +1,10 @@
+{
+	"id": "writing-goal-hud",
+	"name": "Writing Goal HUD",
+	"version": "0.1.0",
+	"minAppVersion": "1.4.0",
+	"description": "目標文字数までの進捗を画面右下にHUDで常時表示するプラグイン。日本語文字数カウントに対応。",
+	"author": "yasuharu519",
+	"authorUrl": "https://github.com/yasuharu519",
+	"isDesktopOnly": false
+}

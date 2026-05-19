@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"description": "目標文字数までの進捗を画面右下にHUD表示するObsidianプラグイン",
 	"main": "main.js",
-	"packageManager": "pnpm@10.28.0",
+	"packageManager": "pnpm@11.1.3",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production"

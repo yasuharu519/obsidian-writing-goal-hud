@@ -1,6 +1,6 @@
 {
 	"name": "writing-goal-hud",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "目標文字数までの進捗を画面右下にHUD表示するObsidianプラグイン",
 	"main": "main.js",
 	"packageManager": "pnpm@11.1.3",

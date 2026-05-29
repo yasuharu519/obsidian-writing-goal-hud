@@ -8,14 +8,20 @@ import {
 	debounce,
 } from "obsidian";
 
+const DEFAULT_FRONTMATTER_KEY = "writing_goal";
+
 interface JpWordCountHudSettings {
 	defaultTargetCount: number;
 	minimized: boolean;
+	allowedFolders: string[]; // 前方一致の許可リスト。"*" で全許可
+	frontmatterKey: string;   // 目標文字数のフロントマターキー
 }
 
 const DEFAULT_SETTINGS: JpWordCountHudSettings = {
 	defaultTargetCount: 1000,
 	minimized: false,
+	allowedFolders: ["*"],
+	frontmatterKey: DEFAULT_FRONTMATTER_KEY,
 };
 
 const HUD_CLASS = "writing-goal-hud";
@@ -26,7 +32,6 @@ const HUD_BAR_FILL_CLASS = "writing-goal-hud__bar-fill";
 const HUD_TOGGLE_CLASS = "writing-goal-hud__toggle";
 const HUD_OVER_CLASS = "is-over";
 const HUD_MINIMIZED_CLASS = "is-minimized";
-const FRONTMATTER_KEY = "writing_goal";
 const DEBOUNCE_MS = 150;
 const ICON_EXPANDED = "▾";
 const ICON_MINIMIZED = "▸";
@@ -127,6 +132,13 @@ export default class JpWordCountHudPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
+	private hideHud(): void {
+		if (this.hudEl) {
+			this.hudEl.style.display = "none";
+			this.hudEl.remove();
+		}
+	}
+
 	updateHud(): void {
 		if (!this.hudEl || !this.textEl || !this.barFillEl || !this.toggleEl) {
 			return;
@@ -134,8 +146,12 @@ export default class JpWordCountHudPlugin extends Plugin {
 
 		const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 		if (!view) {
-			this.hudEl.style.display = "none";
-			this.hudEl.remove();
+			this.hideHud();
+			return;
+		}
+
+		if (!isFolderAllowed(view.file?.path ?? null, this.settings.allowedFolders)) {
+			this.hideHud();
 			return;
 		}
 
@@ -171,7 +187,8 @@ export default class JpWordCountHudPlugin extends Plugin {
 	private resolveTargetCount(file: TFile | null): number {
 		if (file) {
 			const cache = this.app.metadataCache.getFileCache(file);
-			const raw = cache?.frontmatter?.[FRONTMATTER_KEY];
+			const key = this.settings.frontmatterKey || DEFAULT_FRONTMATTER_KEY;
+			const raw = cache?.frontmatter?.[key];
 			const parsed = parsePositiveInt(raw);
 			if (parsed !== null) {
 				return parsed;
@@ -196,7 +213,7 @@ class JpWordCountHudSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("デフォルト目標文字数")
 			.setDesc(
-				`各ノートの frontmatter に \`${FRONTMATTER_KEY}: 2000\` のように指定するとそちらが優先されます。`,
+				`各ノートの frontmatter に目標文字数のキー: 2000 のように指定するとそちらが優先されます。`,
 			)
 			.addText((text) =>
 				text
@@ -211,7 +228,56 @@ class JpWordCountHudSettingTab extends PluginSettingTab {
 						}
 					}),
 			);
+
+		new Setting(containerEl)
+			.setName("目標文字数のフロントマターキー")
+			.setDesc(
+				`各ノートの frontmatter でこのキーに目標値を書くと優先されます。既定: ${DEFAULT_FRONTMATTER_KEY}`,
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder(DEFAULT_FRONTMATTER_KEY)
+					.setValue(this.plugin.settings.frontmatterKey)
+					.onChange(async (value) => {
+						this.plugin.settings.frontmatterKey = value.trim();
+						await this.plugin.saveSettings();
+						this.plugin.updateHud();
+					}),
+			);
+
+		new Setting(containerEl)
+			.setName("表示するフォルダ")
+			.setDesc(
+				"1行に1フォルダ。* ですべてのフォルダ。特定フォルダだけにしたい場合は * を消してパスを記入。空にすると非表示。",
+			)
+			.addTextArea((text) =>
+				text
+					.setPlaceholder("*")
+					.setValue(this.plugin.settings.allowedFolders.join("\n"))
+					.onChange(async (value) => {
+						this.plugin.settings.allowedFolders = value
+							.split("\n")
+							.map((s) => s.trim())
+							.filter((s) => s.length > 0);
+						await this.plugin.saveSettings();
+						this.plugin.updateHud();
+					}),
+			);
 	}
+}
+
+export function isFolderAllowed(
+	filePath: string | null,
+	folders: string[],
+): boolean {
+	for (const raw of folders) {
+		const f = raw.trim().replace(/\/+$/, "");
+		if (f === "*") return true;
+		if (f === "") continue;
+		if (filePath === null) continue;
+		if (filePath === f || filePath.startsWith(f + "/")) return true;
+	}
+	return false;
 }
 
 function parsePositiveInt(raw: unknown): number | null {

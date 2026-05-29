@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/yasuharu519/obsidian-writing-goal-hud/compare/0.2.0...0.3.0) (2026-05-29)
+
+
+### Features
+
+* フォルダ絞り込みとフロントマターキーのカスタマイズ設定を追加 ([4138830](https://github.com/yasuharu519/obsidian-writing-goal-hud/commit/41388308f12aa867f1a0746677018d6178afc41f))
+* フォルダ絞り込みとフロントマターキーのカスタマイズ設定を追加 ([034d46a](https://github.com/yasuharu519/obsidian-writing-goal-hud/commit/034d46a854340651b27dc584928d24120ac8d810))
+
 ## [0.2.0](https://github.com/yasuharu519/obsidian-writing-goal-hud/compare/0.1.0...0.2.0) (2026-05-20)
 
 
